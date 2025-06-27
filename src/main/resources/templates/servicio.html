@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Servicios - Programación y Comunicación Integral</title>
+    <link rel="icon" href="/icons/icono_flecha.jpg" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Menú de Navegación -->
+    <div th:insert="fragments/menu.html :: menu"></div>
+
+    <!-- Contenido Principal -->
+    <div class="container-md animate-fade-in">
+        
+        <!-- Header de la Página -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1 class="page-title">
+                    <i class="fas fa-cogs me-3"></i>
+                    Gestión de Servicios
+                </h1>
+                <p class="text-center fs-5 text-muted mb-4">
+                    Administra y configura los servicios disponibles en tu sistema
+                </p>
+            </div>
+        </div>
+
+        <!-- Formulario de Servicios -->
+        <div class="row mb-5">
+            <div class="col-lg-8 mx-auto">
+                <div class="card shadow-custom">
+                    <div class="card-header">
+                        <h4 class="mb-0">
+                            <i class="fas fa-plus-circle me-2"></i>
+                            Nuevo Servicio
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <form th:object="${servicio}" th:action="@{servicioSave}" method="post">
+                            
+                            <!-- Nombre del Servicio -->
+                            <div class="mb-3">
+                                <label for="nombre" class="form-label">
+                                    <i class="fas fa-tag me-2"></i>
+                                    Nombre del Servicio
+                                </label>
+                                <input type="text" th:field="*{nombre}" class="form-control" id="nombre" 
+                                       required minlength="3" maxlength="25"
+                                       placeholder="Ej: Desarrollo Web, Consultoría, Mantenimiento">
+                            </div>
+
+                            <!-- Tipo de Servicio -->
+                            <div class="mb-3">
+                                <label for="tipo" class="form-label">
+                                    <i class="fas fa-category me-2"></i>
+                                    Categoría
+                                </label>
+                                <select th:field="*{tipo}" class="form-select" id="tipo">
+                                    <option value="">Selecciona una categoría</option>
+                                    <option value="Desarrollo">Desarrollo</option>
+                                    <option value="Consultoría">Consultoría</option>
+                                    <option value="Mantenimiento">Mantenimiento</option>
+                                    <option value="Capacitación">Capacitación</option>
+                                    <option value="Soporte">Soporte Técnico</option>
+                                </select>
+                            </div>
+
+                            <!-- Descripción -->
+                            <div class="mb-3">
+                                <label for="descripcion" class="form-label">
+                                    <i class="fas fa-align-left me-2"></i>
+                                    Descripción
+                                </label>
+                                <textarea th:field="*{descripcion}" class="form-control" id="descripcion" 
+                                          rows="3" placeholder="Describe el servicio en detalle..."></textarea>
+                            </div>
+
+                            <!-- Botones -->
+                            <div class="d-flex gap-3 justify-content-center">
+                                <button type="reset" class="btn btn-danger">
+                                    <i class="fas fa-eraser me-2"></i>
+                                    Limpiar
+                                </button>
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fas fa-save me-2"></i>
+                                    Guardar Servicio
+                                </button>
+                            </div>
+
+                            <!-- Mensaje de Información -->
+                            <div class="mt-3" th:if="${mensaje}">
+                                <div class="alert alert-info" role="alert">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <span th:text="${mensaje}"></span>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabla de Servicios -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow-custom">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">
+                            <i class="fas fa-list me-2"></i>
+                            Lista de Servicios
+                        </h4>
+                        <span class="badge bg-primary fs-6">
+                            <i class="fas fa-cogs me-1"></i>
+                            <span th:text="${#lists.size(likeNombre)}">0</span> servicios
+                        </span>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">
+                                            <i class="fas fa-hashtag me-1"></i>
+                                            ID
+                                        </th>
+                                        <th scope="col">
+                                            <i class="fas fa-tag me-1"></i>
+                                            Nombre
+                                        </th>
+                                        <th scope="col">
+                                            <i class="fas fa-align-left me-1"></i>
+                                            Descripción
+                                        </th>
+                                        <th scope="col">
+                                            <i class="fas fa-category me-1"></i>
+                                            Tipo
+                                        </th>
+                                        <th scope="col">
+                                            <i class="fas fa-cogs me-1"></i>
+                                            Acciones
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="servicio : ${likeNombre}" class="animate-slide-in">
+                                        <th scope="row" th:text="${servicio.id}"></th>
+                                        <td>
+                                            <span class="badge bg-primary" th:text="${servicio.nombre}"></span>
+                                        </td>
+                                        <td th:text="${servicio.descripcion}"></td>
+                                        <td>
+                                            <span class="badge bg-info" th:text="${servicio.tipo}"></span>
+                                        </td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <button class="btn btn-sm btn-warning" title="Editar">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-danger" title="Eliminar">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-info" title="Ver Detalles">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr th:if="${#lists.isEmpty(likeNombre)}">
+                                        <td colspan="5" class="text-center text-muted py-4">
+                                            <i class="fas fa-cogs fa-3x mb-3"></i>
+                                            <p class="fs-5">No hay servicios registrados</p>
+                                            <p class="text-muted">Agrega tu primer servicio usando el formulario de arriba</p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Servicios Destacados -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <h3 class="text-center mb-4">
+                    <i class="fas fa-star me-2"></i>
+                    Servicios Destacados
+                </h3>
+            </div>
+            
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 animate-slide-in">
+                    <div class="card-header text-center">
+                        <i class="fas fa-laptop-code fa-2x mb-2"></i>
+                        <h5 class="mb-0">Desarrollo Web</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <p class="card-text">
+                            Creamos sitios web modernos y responsivos con las últimas tecnologías.
+                        </p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-success">Desde $500</span>
+                            <span class="badge bg-info">1-3 semanas</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 animate-slide-in">
+                    <div class="card-header text-center">
+                        <i class="fas fa-mobile-alt fa-2x mb-2"></i>
+                        <h5 class="mb-0">Apps Móviles</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <p class="card-text">
+                            Desarrollo de aplicaciones móviles nativas y multiplataforma.
+                        </p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-success">Desde $800</span>
+                            <span class="badge bg-info">2-4 semanas</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100 animate-slide-in">
+                    <div class="card-header text-center">
+                        <i class="fas fa-headset fa-2x mb-2"></i>
+                        <h5 class="mb-0">Soporte Técnico</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <p class="card-text">
+                            Soporte técnico especializado disponible 24/7 para tu negocio.
+                        </p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="badge bg-success">Desde $100/mes</span>
+                            <span class="badge bg-info">24/7</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estadísticas de Servicios -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <h3 class="text-center mb-4">
+                    <i class="fas fa-chart-line me-2"></i>
+                    Estadísticas de Servicios
+                </h3>
+            </div>
+            
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div class="card text-center animate-pulse">
+                    <div class="card-body">
+                        <i class="fas fa-cogs fa-3x text-primary mb-3"></i>
+                        <h3 class="text-gradient" th:text="${#lists.size(likeNombre)}">0</h3>
+                        <p class="card-text">Servicios Activos</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div class="card text-center animate-pulse">
+                    <div class="card-body">
+                        <i class="fas fa-users fa-3x text-success mb-3"></i>
+                        <h3 class="text-gradient">150+</h3>
+                        <p class="card-text">Clientes Satisfechos</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div class="card text-center animate-pulse">
+                    <div class="card-body">
+                        <i class="fas fa-star fa-3x text-warning mb-3"></i>
+                        <h3 class="text-gradient">4.9/5</h3>
+                        <p class="card-text">Calificación Promedio</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div class="card text-center animate-pulse">
+                    <div class="card-body">
+                        <i class="fas fa-award fa-3x text-info mb-3"></i>
+                        <h3 class="text-gradient">5+</h3>
+                        <p class="card-text">Años de Experiencia</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    
+    <!-- Script para animaciones -->
+    <script>
+        // Animación de aparición al hacer scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observar elementos para animación
+        document.querySelectorAll('.card, .table tbody tr').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'all 0.6s ease';
+            observer.observe(el);
+        });
+
+        // Validación de formulario en tiempo real
+        document.querySelectorAll('.form-control, .form-select').forEach(input => {
+            input.addEventListener('input', function() {
+                if (this.checkValidity()) {
+                    this.classList.remove('is-invalid');
+                    this.classList.add('is-valid');
+                } else {
+                    this.classList.remove('is-valid');
+                    this.classList.add('is-invalid');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

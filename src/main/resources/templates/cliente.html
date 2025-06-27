@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Clientes - Programación y Comunicación Integral</title>
+    <link rel="icon" href="/icons/icono_flecha.jpg" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Menú de Navegación -->
+    <div th:insert="fragments/menu.html :: menu"></div>
+
+    <!-- Contenido Principal -->
+    <div class="container-md animate-fade-in">
+        
+        <!-- Header de la Página -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1 class="page-title">
+                    <i class="fas fa-users me-3"></i>
+                    Gestión de Clientes
+                </h1>
+                <p class="text-center fs-5 text-muted mb-4">
+                    Administra y gestiona la información de tus clientes de manera eficiente
+                </p>
+            </div>
+        </div>
+
+        <!-- Formulario de Clientes -->
+        <div class="row mb-5">
+            <div class="col-lg-8 mx-auto">
+                <div class="card shadow-custom">
+                    <div class="card-header">
+                        <h4 class="mb-0">
+                            <i class="fas fa-user-plus me-2"></i>
+                            Nuevo Cliente
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <form th:object="${cliente}" th:action="@{clienteSave}" method="post">
+                            
+                            <!-- Apellido -->
+                            <div class="mb-3">
+                                <label for="apellido" class="form-label">
+                                    <i class="fas fa-user me-2"></i>
+                                    Apellido
+                                </label>
+                                <input type="text" th:field="*{apellido}" class="form-control" id="apellido" 
+                                       required minlength="3" maxlength="25" 
+                                       placeholder="Ingrese el apellido del cliente">
+                            </div>
+
+                            <!-- Nombre -->
+                            <div class="mb-3">
+                                <label for="nombre" class="form-label">
+                                    <i class="fas fa-user me-2"></i>
+                                    Nombre
+                                </label>
+                                <input type="text" th:field="*{nombre}" class="form-control" id="nombre" 
+                                       required minlength="3" maxlength="25"
+                                       placeholder="Ingrese el nombre del cliente">
+                            </div>
+
+                            <!-- Edad -->
+                            <div class="mb-3">
+                                <label for="edad" class="form-label">
+                                    <i class="fas fa-birthday-cake me-2"></i>
+                                    Edad
+                                </label>
+                                <input type="number" th:field="*{edad}" class="form-control" id="edad" 
+                                       required min="18" max="120"
+                                       placeholder="Ingrese la edad del cliente">
+                            </div>
+
+                            <!-- Email -->
+                            <div class="mb-3">
+                                <label for="email" class="form-label">
+                                    <i class="fas fa-envelope me-2"></i>
+                                    Email
+                                </label>
+                                <input type="email" th:field="*{email}" class="form-control" id="email" 
+                                       required
+                                       placeholder="ejemplo@correo.com">
+                            </div>
+
+                            <!-- Teléfono -->
+                            <div class="mb-3">
+                                <label for="telefono" class="form-label">
+                                    <i class="fas fa-phone me-2"></i>
+                                    Teléfono
+                                </label>
+                                <input type="tel" th:field="*{telefono}" class="form-control" id="telefono" 
+                                       required
+                                       placeholder="+54 9 11 1234-5678">
+                            </div>
+
+                            <!-- Botones -->
+                            <div class="d-flex gap-3 justify-content-center">
+                                <button type="reset" class="btn btn-danger">
+                                    <i class="fas fa-eraser me-2"></i>
+                                    Limpiar
+                                </button>
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fas fa-save me-2"></i>
+                                    Guardar Cliente
+                                </button>
+                            </div>
+
+                            <!-- Mensaje de Información -->
+                            <div class="mt-3" th:if="${mensaje}">
+                                <div class="alert alert-info" role="alert">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <span th:text="${mensaje}"></span>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabla de Clientes -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card shadow-custom">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">
+                            <i class="fas fa-list me-2"></i>
+                            Lista de Clientes
+                        </h4>
+                        <span class="badge bg-primary fs-6">
+                            <i class="fas fa-users me-1"></i>
+                            <span th:text="${#lists.size(likeApellido)}">0</span> clientes
+                        </span>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">
+                                            <i class="fas fa-hashtag me-1"></i>
+                                            ID
+                                        </th>
+                                        <th scope="col">
+                                            <i class="fas fa-user me-1"></i>
+                                            Nombre
+                                        </th>
+                                        <th scope="col">
+                                            <i class="fas fa-user me-1"></i>
+                                            Apellido
+                                        </th>
+                                        <th scope="col">
+                                            <i class="fas fa-birthday-cake me-1"></i>
+                                            Edad
+                                        </th>
+                                        <th scope="col">
+                                            <i class="fas fa-envelope me-1"></i>
+                                            Email
+                                        </th>
+                                        <th scope="col">
+                                            <i class="fas fa-phone me-1"></i>
+                                            Teléfono
+                                        </th>
+                                        <th scope="col">
+                                            <i class="fas fa-cogs me-1"></i>
+                                            Acciones
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="cliente : ${likeApellido}" class="animate-slide-in">
+                                        <th scope="row" th:text="${cliente.id}"></th>
+                                        <td th:text="${cliente.nombre}"></td>
+                                        <td th:text="${cliente.apellido}"></td>
+                                        <td>
+                                            <span class="badge bg-info" th:text="${cliente.edad} + ' años'"></span>
+                                        </td>
+                                        <td>
+                                            <a th:href="'mailto:' + ${cliente.email}" class="text-decoration-none">
+                                                <i class="fas fa-envelope me-1"></i>
+                                                <span th:text="${cliente.email}"></span>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a th:href="'tel:' + ${cliente.telefono}" class="text-decoration-none">
+                                                <i class="fas fa-phone me-1"></i>
+                                                <span th:text="${cliente.telefono}"></span>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <button class="btn btn-sm btn-warning" title="Editar">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-danger" title="Eliminar">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr th:if="${#lists.isEmpty(likeApellido)}">
+                                        <td colspan="7" class="text-center text-muted py-4">
+                                            <i class="fas fa-users fa-3x mb-3"></i>
+                                            <p class="fs-5">No hay clientes registrados</p>
+                                            <p class="text-muted">Agrega tu primer cliente usando el formulario de arriba</p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estadísticas Rápidas -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <h3 class="text-center mb-4">
+                    <i class="fas fa-chart-bar me-2"></i>
+                    Estadísticas de Clientes
+                </h3>
+            </div>
+            
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div class="card text-center animate-pulse">
+                    <div class="card-body">
+                        <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                        <h3 class="text-gradient" th:text="${#lists.size(likeApellido)}">0</h3>
+                        <p class="card-text">Total de Clientes</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div class="card text-center animate-pulse">
+                    <div class="card-body">
+                        <i class="fas fa-user-plus fa-3x text-success mb-3"></i>
+                        <h3 class="text-gradient">Nuevos</h3>
+                        <p class="card-text">Clientes este mes</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div class="card text-center animate-pulse">
+                    <div class="card-body">
+                        <i class="fas fa-star fa-3x text-warning mb-3"></i>
+                        <h3 class="text-gradient">4.8/5</h3>
+                        <p class="card-text">Satisfacción</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3 col-md-6 mb-3">
+                <div class="card text-center animate-pulse">
+                    <div class="card-body">
+                        <i class="fas fa-clock fa-3x text-info mb-3"></i>
+                        <h3 class="text-gradient">24/7</h3>
+                        <p class="card-text">Soporte Disponible</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    
+    <!-- Script para animaciones -->
+    <script>
+        // Animación de aparición al hacer scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observar elementos para animación
+        document.querySelectorAll('.card, .table tbody tr').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'all 0.6s ease';
+            observer.observe(el);
+        });
+
+        // Validación de formulario en tiempo real
+        document.querySelectorAll('.form-control').forEach(input => {
+            input.addEventListener('input', function() {
+                if (this.checkValidity()) {
+                    this.classList.remove('is-invalid');
+                    this.classList.add('is-valid');
+                } else {
+                    this.classList.remove('is-valid');
+                    this.classList.add('is-invalid');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
