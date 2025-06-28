@@ -1,90 +1,23 @@
 package ar.org.centro8.curso.tp3.servicios.repositories;
 
-import ar.org.centro8.curso.tp3.servicios.connectors.Connector;
 import ar.org.centro8.curso.tp3.servicios.entities.Producto;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.List;
 
-
-public class ProductoRepository {  
+@Repository
+public interface ProductoRepository extends JpaRepository<Producto, Integer> {
     
-    private Connection conn=Connector.getConnection();
+    @Query("SELECT p FROM Producto p WHERE p.activo = true")
+    List<Producto> findAllActivos();
     
-    public void save(Producto producto){
-
-        if(producto == null) return;
-        try (PreparedStatement ps = conn.prepareStatement(
-            "insert into productos (nombre, precio, stock) values (?,?,?)",
-            PreparedStatement.RETURN_GENERATED_KEYS)){
-            ps.setString(1, producto.getNombre());
-            ps.setDouble(2, producto.getPrecio());
-            ps.setInt(3, producto.getStock());
-            ps.execute();
-            ResultSet rs = ps.getGeneratedKeys();
-
-            if(rs.next()) producto.setId(rs.getInt(1));
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-    }
-
-    public void remove(Producto producto){
-
-        if(producto == null) return;
-        try (PreparedStatement ps = conn.prepareStatement(
-            "delete from productos where id=?")){
-            ps.setInt(1, producto.getId());
-            ps.execute();
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-    }
-
-    public List<Producto>getAll(){
-        List<Producto> list = new ArrayList<Producto>();
-        try (ResultSet rs = conn
-                                .createStatement()
-                                .executeQuery("select * from productos")){
-            while(rs.next()){
-                list.add(new Producto(
-                                    rs.getInt("id"), 
-                                    rs.getString("nombre"), 
-                                    rs.getDouble("precio"),
-                                    rs.getInt("stock")
-                ));
-            }
-
-        } catch (Exception e) {
-            System.out.println(e);
-
-        }
-        return list;
-    }
-
-    public Producto getById(int id){
-        return getAll()
-                        .stream()
-                        .filter(producto->producto.getId()==id)
-                        .findFirst()
-                        .orElse(new Producto());
-    }
-
-    public List<Producto>getLikeApellido(String nombre){
-
-        if(nombre == null) return new ArrayList<Producto>();
-        return getAll()
-                        .stream()
-                        .filter(producto->producto
-                                                .getNombre()
-                                                .toLowerCase()
-                                                .contains(nombre.toLowerCase()))
-                        .toList();
-    }
-
+    @Query("SELECT p FROM Producto p WHERE p.activo = true AND LOWER(p.nombre) LIKE LOWER(CONCAT('%', :nombre, '%'))")
+    List<Producto> findByNombreContainingIgnoreCase(@Param("nombre") String nombre);
+    
+    @Query("SELECT p FROM Producto p WHERE p.activo = true AND p.precio <= :precioMaximo")
+    List<Producto> findByPrecioLessThanOrEqualTo(@Param("precioMaximo") double precioMaximo);
 }
 

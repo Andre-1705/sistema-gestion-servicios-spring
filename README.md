@@ -1,110 +1,154 @@
-# Sistema de Gestión de Servicios - Spring Boot
+# 🚀 Servicios Integrales - Versión Mejorada
 
 ## 📋 Descripción
-Sistema web completo para la gestión de servicios, clientes, empleados y productos desarrollado con Spring Boot. La aplicación proporciona una interfaz moderna y responsive para administrar todos los aspectos de un negocio de servicios.
+Sistema de gestión integral para servicios de programación y comunicación, desarrollado con Spring Boot y PostgreSQL.
 
-## 🚀 Tecnologías Utilizadas
-- **Backend:** Spring Boot 3.2.6
-- **Frontend:** Thymeleaf, Bootstrap 5, Font Awesome
-- **Base de Datos:** PostgreSQL
-- **Build Tool:** Maven
-- **Java:** JDK 21
+## ✨ Características Principales
 
-## ✨ Características
-- 🏠 **Página Principal:** Dashboard con estadísticas y navegación intuitiva
-- 👥 **Gestión de Clientes:** CRUD completo para clientes
-- 🔧 **Gestión de Servicios:** Administración de servicios ofrecidos
-- 👨‍💼 **Gestión de Empleados:** Control de personal
-- 📦 **Gestión de Productos:** Inventario de productos
-- ⚙️ **Configuración:** Panel de configuración del sistema
-- 📱 **Responsive Design:** Adaptable a móviles, tablets y desktop
-- 🎨 **UI Moderna:** Interfaz con animaciones y efectos visuales
+### 🎨 **Frontend Moderno**
+- Diseño responsive con Bootstrap 5
+- Animaciones y efectos visuales
+- Interfaz intuitiva y profesional
+- Iconos de Font Awesome
 
-## 🛠️ Instalación y Configuración
+### 🗄️ **Base de Datos**
+- PostgreSQL como base de datos principal
+- JPA/Hibernate para mapeo de objetos
+- Spring Data JPA para operaciones CRUD
+- Esquema optimizado con restricciones
+
+### 🔧 **Tecnologías Utilizadas**
+- **Backend**: Spring Boot 3.2.6
+- **Base de Datos**: PostgreSQL
+- **Frontend**: Thymeleaf + Bootstrap 5
+- **ORM**: Spring Data JPA
+- **Java**: JDK 17
+
+## 🏗️ Estructura del Proyecto
+
+```
+Servicios/
+├── src/main/java/
+│   └── ar/org/centro8/curso/tp3/servicios/
+│       ├── controllers/     # Controladores REST
+│       ├── entities/        # Entidades JPA
+│       ├── repositories/    # Repositorios Spring Data
+│       └── ServiciosApplication.java
+├── src/main/resources/
+│   ├── templates/          # Plantillas Thymeleaf
+│   ├── static/            # Archivos estáticos (CSS, JS, imágenes)
+│   ├── sql/              # Scripts SQL
+│   └── application.properties
+└── pom.xml
+```
+
+## 🚀 Instalación y Configuración
 
 ### Prerrequisitos
-- Java 21 o superior
+- Java 17 o superior
+- PostgreSQL 12 o superior
 - Maven 3.6+
-- PostgreSQL (para producción)
 
-### Pasos de Instalación
-1. **Clonar el repositorio:**
-   ```bash
-   git clone https://github.com/Andre-1705/sistema-gestion-servicios-spring.git
-   cd sistema-gestion-servicios-spring
-   ```
-
-2. **Compilar el proyecto:**
-   ```bash
-   ./mvnw clean install
-   ```
-
-3. **Ejecutar la aplicación:**
-   ```bash
-   ./mvnw spring-boot:run
-   ```
-
-4. **Acceder a la aplicación:**
-   - URL: http://localhost:8084
-   - La aplicación se ejecuta en el puerto 8084
-
-## 📁 Estructura del Proyecto
-```
-src/
-├── main/
-│   ├── java/
-│   │   └── ar/org/centro8/curso/tp3/servicios/
-│   │       ├── controllers/     # Controladores REST
-│   │       ├── entities/        # Entidades JPA
-│   │       ├── repositories/    # Repositorios de datos
-│   │       ├── connectors/      # Conectores de base de datos
-│   │       └── utils/           # Utilidades
-│   └── resources/
-│       ├── templates/           # Plantillas Thymeleaf
-│       ├── static/              # CSS, JS, imágenes
-│       ├── sql/                 # Scripts de base de datos
-│       └── application.properties
+### 1. Clonar el repositorio
+```bash
+git clone [URL_DEL_REPOSITORIO]
+cd Servicios
 ```
 
-## 🎯 Funcionalidades Principales
+### 2. Configurar PostgreSQL
+```sql
+-- Crear base de datos
+CREATE DATABASE servicios;
 
-### Dashboard Principal
-- Vista general del sistema
-- Navegación intuitiva
-- Diseño responsive
+-- Ejecutar script DDL
+\i src/main/resources/sql/DDL_postgresql.sql
+```
 
-### Gestión de Clientes
-- Listado de clientes
-- Agregar nuevos clientes
-- Editar información existente
-- Eliminar clientes
+### 3. Configurar aplicación
+Editar `src/main/resources/application.properties`:
+```properties
+spring.datasource.url=jdbc:postgresql://localhost:5432/servicios
+spring.datasource.username=tu_usuario
+spring.datasource.password=tu_password
+```
 
-### Gestión de Servicios
-- Catálogo de servicios
-- Administración de precios
-- Control de disponibilidad
+### 4. Ejecutar la aplicación
+```bash
+mvn spring-boot:run
+```
 
-### Panel de Configuración
-- Configuración del sistema
-- Ajustes de aplicación
+La aplicación estará disponible en: `http://localhost:8084`
 
-## 🔧 Configuración de Base de Datos
-La aplicación está configurada para usar PostgreSQL. Los scripts SQL se encuentran en `src/main/resources/sql/`:
-- `DDL.sql` - Estructura de la base de datos
-- `DML.sql` - Datos de ejemplo
-- `Query.sql` - Consultas de ejemplo
+## 📱 Funcionalidades
 
-## 📱 Capturas de Pantalla
-*[Aquí puedes agregar capturas de pantalla de la aplicación]*
+### 👥 **Gestión de Clientes**
+- Agregar, editar y eliminar clientes
+- Búsqueda por nombre o apellido
+- Validación de datos en tiempo real
 
-## 🤝 Contribuciones
-Las contribuciones son bienvenidas. Por favor, abre un issue o pull request para sugerencias y mejoras.
+### ⚙️ **Gestión de Servicios**
+- Crear servicios de Programación y Comunicación
+- Asignar servicios a clientes
+- Categorización por tipo
 
-## 📄 Licencia
-Este proyecto está bajo la Licencia MIT.
+### 📦 **Gestión de Productos**
+- Control de inventario
+- Precios y stock
+- Búsqueda avanzada
+
+### 👨‍💼 **Gestión de Empleados**
+- Registro de empleados
+- Control de salarios
+- Fechas de contrato
+
+## 🎯 Mejoras Implementadas
+
+### ✅ **Versión Anterior vs Actual**
+- **Antes**: JDBC directo, MySQL, frontend básico
+- **Ahora**: JPA, PostgreSQL, frontend moderno
+
+### 🔄 **Migración de Tecnologías**
+- JDBC → Spring Data JPA
+- MySQL → PostgreSQL
+- HTML básico → Bootstrap 5 + Thymeleaf
+- Sin validaciones → Validaciones completas
+
+## 📊 Base de Datos
+
+### Tablas Principales
+- **clientes**: Información de clientes
+- **servicios**: Servicios ofrecidos
+- **productos**: Inventario de productos
+- **empleados**: Personal de la empresa
+
+### Relaciones
+- Servicios → Clientes (Many-to-One)
+- Productos independientes
+- Empleados independientes
+
+## 🛠️ Desarrollo
+
+### Compilar
+```bash
+mvn clean compile
+```
+
+### Ejecutar tests
+```bash
+mvn test
+```
+
+### Empaquetar
+```bash
+mvn clean package
+```
+
+## 📝 Licencia
+Este proyecto es parte del curso de programación y está destinado únicamente para fines educativos.
 
 ## 👨‍💻 Autor
-Desarrollado por [Tu Nombre] como proyecto de Spring Boot.
+Desarrollado como proyecto académico para gestión de servicios integrales.
 
 ---
-⭐ Si te gusta este proyecto, ¡dale una estrella en GitHub!
+**Versión**: 2.0 - Mejorada con Spring Boot y PostgreSQL
+**Fecha**: Junio 2025
